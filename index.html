@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Net-Lab </title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    :root {
+      --primary: #6A1B9A;
+      --accent: #9C27B0;
+      --muted: #6b7280;
+      --card-bg: #fff;
+      --page-bg: #f7f4fb;
+      --shadow: 0 10px 30px rgba(15, 10, 30, 0.08);
+      --container: 1200px;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+      background: var(--page-bg);
+      color: #111;
+      line-height: 1.5;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    .container {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 20px
+    }
+
+    /* ================= FLOATING IMAGES ================= */
+    .floating-img {
+      position: absolute;
+      width: clamp(40px, 8vw, 130px);
+      max-width: 130px;
+      animation: floatMove 8s infinite linear, glitchImg 0.2s infinite;
+    }
+
+    @keyframes floatMove {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      25% {
+        transform: translate(35vw, -10vh);
+      }
+
+      50% {
+        transform: translate(60vw, 20vh);
+      }
+
+      75% {
+        transform: translate(10vw, 40vh);
+      }
+
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+
+    @keyframes glitchImg {
+      100% {
+        filter: hue-rotate(0deg);
+      }
+
+      100% {
+        filter: hue-rotate(90deg);
+      }
+
+      100% {
+        filter: hue-rotate(-90deg);
+      }
+    }
+
+    /* NAVBAR */
+    header.nav {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      box-shadow: var(--shadow);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 20px;
+      flex-wrap: wrap
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .logo {
+      width: 80px;
+      height: 70px;
+      background: rgba(255, 255, 255, 0.12);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #25b86e;
+      font-weight: 800;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+
+    nav.links {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap
+    }
+
+    nav.links a {
+      color: rgba(255, 255, 255, 0.95);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: .2s
+    }
+
+    nav.links a:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.06)
+    }
+
+    .menu-toggle {
+      display: none;
+      background: transparent;
+      border: 0;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer
+    }
+
+    @media(max-width:900px) {
+      nav.links {
+        display: none;
+        width: 100%
+      }
+
+      .menu-toggle {
+        display: block
+      }
+    }
+
+    nav.links.show {
+      display: flex;
+      flex-direction: column;
+      width: 100%
+    }
+
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(180deg, #e102ff 10%, var(--primary) 50%);
+      color: #ffffff;
+      padding: 57px 0 60px
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 30px;
+      align-items: center
+    }
+
+    @media(max-width:900px) {
+      .hero-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .typed {
+      color: #ffbe82;
+      font-weight: 900;
+      margin-left: 8px
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px
+    }
+
+    .pill {
+      background: rgba(241, 4, 4, 0.12);
+      padding: 9px 14px;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 800;
+      transition: all .25s
+    }
+
+    .pill:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(231, 16, 16, 0.12)
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      padding: 18px;
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(3, 3, 3, 0.18);
+      text-align: center;
+      transform: translateY(0);
+      animation: float 6s ease-in-out infinite
+    }
+
+    .hero-card img {
+      max-width: 320px;
+      border-radius: 10px;
+      width: 100%;
+      animation: infinite linear, glitchImg 0.2s infinite;
+    }
+
+    /* glitchImg and floatMove keyframes must be top-level rules (not nested) */
+    @keyframes glitchImg {
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      50% {
+        filter: hue-rotate(90deg);
+      }
+
+      100% {
+        filter: hue-rotate(-90deg);
+      }
+    }
+
+
+
+    /* SECTIONS */
+    .section {
+      padding: 38px 0
+    }
+
+    .section h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: #2f0830
+    }
+
+    /* Subnetting Calculator — Dark Hacker / Neon style (no navbar) */
+    :root {
+      --bg: #0b0b0b;
+      --panel: #0f1113;
+      --neon: #00ff66;
+      --muted: #7f8c8d;
+      --glass: rgba(255, 255, 255, 0.03);
+      --radius: 12px;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      --accent-glow: 0 0 18px rgba(0, 255, 102, 0.12), 0 0 6px rgba(0, 255, 102, 0.08);
+    }
+
+    /* protocols */
+ h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 34px;
+  animation: titleGlow 2.8s infinite alternate, floatTitle 4s ease-in-out infinite;
+}
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+  animation: titleGlow 2.8s infinite alternate, floatTitle 4s ease-in-out infinite;
+  color: var(--neon);
+}
+@keyframes titleGlow {
+  0% { text-shadow: 0 0 10px var(--neon), 0 0 20px var(--neon); }
+  100% { text-shadow: 0 0 25px var(--neon), 0 0 45px var(--neon); }
+}
+
+@keyframes floatTitle {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+
+
+/* ====================== */
+/*     Tools Controls     */
+/* ====================== */
+.controls {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  padding: 12px;
+  width: 260px;
+  background: var(--panel);
+  border: 2px solid var(--neon);
+  color: var(--neon);
+  border-radius: 8px;
+  transition: 0.4s;
+  animation: inputPulse 2s infinite alternate, glowField 3.5s infinite ease-in-out;
+}
+
+@keyframes inputPulse {
+  0% { box-shadow: 0 0 10px var(--neon); }
+  100% { box-shadow: 0 0 25px var(--neon); }
+}
+
+@keyframes glowField {
+  0% { filter: brightness(0.9); }
+  50% { filter: brightness(1.3); }
+  100% { filter: brightness(0.9); }
+}
+
+input[type="text"]:focus {
+  width: 330px;
+  box-shadow: 0 0 30px var(--neon) inset;
+}
+
+
+
+/* ====================== */
+/*        Buttons         */
+/* ====================== */
+button {
+  padding: 10px 20px;
+  margin: 6px;
+  border: 2px solid var(--neon);
+  border-radius: 10px;
+  background: var(--glass);
+  color: var(--neon);
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+  animation: btnGlow 1.4s infinite alternate, btnFlicker 5s infinite;
+}
+
+@keyframes btnGlow {
+  0% { box-shadow: 0 0 10px var(--neon); }
+  100% { box-shadow: 0 0 25px var(--neon); }
+}
+
+@keyframes btnFlicker {
+  0%,100% { opacity: 1; }
+  48% { opacity: 0.88; }
+  50% { opacity: 0.6; }
+  52% { opacity: 0.88; }
+}
+
+button:hover {
+  background: var(--neon);
+  color: #000;
+  transform: scale(1.15);
+}
+
+
+
+/* ====================== */
+/*        TABLE           */
+/* ====================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--panel);
+  border-radius: 12px;
+  overflow: hidden;
+  display: none; /* مخفي في البداية */
+  box-shadow: var(--shadow), 0 0 35px rgba(0,255,102,0.25);
+  animation: tableAppear 1.2s ease forwards;
+}
+
+@keyframes tableAppear {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+th, td {
+  border: 1px solid rgba(0,255,102,0.25);
+  padding: 14px;
+  text-align: center;
+  color: #d7ffe6;
+  font-size: 15px;
+}
+
+th {
+  background: #0c1d14;
+  font-size: 18px;
+  text-shadow: 0 0 18px var(--neon);
+}
+
+
+
+/* ====================== */
+/*     Row Animations     */
+/* ====================== */
+.fade-in {
+  animation: fadeIn 0.5s forwards, rowGlow 2s infinite alternate;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(-20px) scale(0.95); filter: blur(3px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes rowGlow {
+  0% { box-shadow: inset 0 0 8px var(--neon); }
+  100% { box-shadow: inset 0 0 20px var(--neon); }
+}
+
+tbody tr:hover {
+  background: rgba(0,255,102,0.07);
+  transform: scale(1.03);
+  box-shadow: inset 0 0 25px var(--neon);
+}
+
+.hidden-row {
+  display: none !important;
+}
+    /* page base */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 28px;
+      direction: rtl;
+      background:
+        radial-gradient(1200px 400px at 10% 10%, rgba(0, 255, 102, 0.02), transparent 6%),
+        linear-gradient(180deg, #030304 0%, var(--bg) 100%);
+      color: var(--neon);
+      font-family: "Courier New", Courier, monospace;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* centered container */
+    .calc-wrap {
+      max-width: 920px;
+      margin: 18px auto;
+      padding: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 255, 102, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle animated grid lines */
+    .calc-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(transparent 95%, rgba(0, 255, 102, 0.015) 95%),
+        linear-gradient(90deg, transparent 95%, rgba(0, 255, 102, 0.012) 95%);
+      background-size: 100% 40px, 40px 100%;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+    }
+
+    /* headline */
+    .calc-wrap h1 {
+      margin: 0 0 18px 0;
+      font-size: 22px;
+      color: var(--neon);
+      letter-spacing: 1px;
+      text-align: center;
+      text-shadow: 0 0 8px rgba(0, 255, 102, 0.18);
+    }
+
+    /* inputs row */
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    /* inputs */
+    input[type="text"],
+    input[type="number"],
+    input[id="ip"],
+    input[id="cidr"] {
+      min-width: 160px;
+      max-width: 420px;
+      padding: 12px 14px;
+      background: var(--panel);
+      border: 1px solid rgba(0, 255, 102, 0.12);
+      color: var(--neon);
+      border-radius: 10px;
+      outline: none;
+      box-shadow: var(--accent-glow);
+      font-size: 15px;
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+    }
+
+    /* focus effect */
+    input:focus {
+      transform: translateY(-3px);
+      border-color: rgba(0, 255, 102, 0.35);
+      box-shadow: 0 0 26px rgba(0, 255, 102, 0.14);
+    }
+
+    /* placeholder color */
+    input::placeholder {
+      color: rgba(0, 255, 102, 0.32);
+      font-style: italic;
+    }
+
+    /* button */
+    button {
+      padding: 12px 18px;
+      background: linear-gradient(180deg, rgba(0, 255, 102, 0.12), rgba(0, 255, 102, 0.06));
+      color: #001b00;
+      font-weight: 700;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 255, 102, 0.22);
+      cursor: pointer;
+      box-shadow: var(--accent-glow);
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      font-family: inherit;
+    }
+
+    button:hover {
+      transform: translateY(-3px) scale(1.02);
+      filter: brightness(1.06);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    /* output area */
+    #out {
+      margin-top: 14px;
+      color: #dfffe6;
+    }
+
+    /* table styling */
+    #out table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.02));
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #out th,
+    #out td {
+      padding: 10px 12px;
+      text-align: right;
+      font-size: 14px;
+      border-bottom: 1px dashed rgba(0, 255, 102, 0.06);
+    }
+
+    #out th {
+      background: rgba(0, 0, 0, 0.35);
+      color: var(--neon);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.6px;
+      text-shadow: 0 0 6px rgba(0, 255, 102, 0.06);
+    }
+
+    /* zebra rows */
+    #out tr:nth-child(even) td {
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.03), transparent);
+    }
+
+    /* small badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(0, 255, 102, 0.08);
+      color: var(--neon);
+      font-size: 12px;
+      border: 1px solid rgba(0, 255, 102, 0.12);
+    }
+
+    /* responsive */
+    @media (max-width:720px) {
+      :root {
+        --radius: 10px;
+      }
+
+      .calc-wrap {
+        padding: 14px;
+      }
+
+      .controls {
+        gap: 8px;
+      }
+
+      input {
+        min-width: 120px;
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      button {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+
+      #out th,
+      #out td {
+        padding: 8px;
+        font-size: 13px;
+      }
+    }
+
+    /* optional subtle floating particles (pure CSS) */
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(0, 255, 102, 0.035);
+      box-shadow: 0 0 6px rgba(0, 255, 102, 0.06);
+      animation: floaty 6s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floaty {
+      0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.6;
+      }
+
+      50% {
+        transform: translateY(-24px) translateX(12px) scale(1.15);
+        opacity: 0.9;
+      }
+
+      100% {
+        transform: translateY(0) translateX(-6px) scale(1);
+        opacity: 0.6;
+      }
+    }
+
+    /* NETWORK area */
+#container{display:flex;gap:10px;padding:10px;}
+#toolbox{
+  width:160px;background:#111;border:1px solid #0f0;padding:10px;border-radius:8px;
+  box-shadow:0 0 15px #0f0; display:flex;flex-direction:column;
+  animation: pulseBox 3s infinite alternate;
+}
+#toolbox button{
+  width:100%;margin:5px 0;padding:6px;background:#111;color:#0f0;border:1px solid #0f0;
+  cursor:pointer;box-shadow:0 0 5px #0f0;transition: all 0.3s;
+}
+#toolbox button:hover{
+  background:#0f0;color:#000;box-shadow:0 0 20px #0f0;transform:translateX(3px);
+}
+@keyframes pulseBox{
+  0%{box-shadow:0 0 5px #0f0;}
+  50%{box-shadow:0 0 20px #0f0;}
+  100%{box-shadow:0 0 10px #0f0;}
+}
+
+#workarea{
+  position:relative;width:800px;height:500px;background:#000;border:1px solid #0f0;
+  border-radius:8px;overflow:hidden;box-shadow:0 0 20px #0f0 inset;
+}
+.device{
+  position:absolute;width:60px;cursor:grab;user-select:none;text-align:center;
+  transition: transform 0.2s, filter 0.2s;
+}
+.device img{width:60px;display:block;margin:0 auto;transition: transform 0.2s, filter 0.2s;}
+.device span{
+  display:block;color:#0f0;font-size:12px;text-align:center;text-shadow:0 0 8px #0f0;
+  cursor:pointer;
+}
+canvas{position:absolute;top:0;left:0;z-index:1;}
+
+.neonBtn{
+  background:#111;
+  color:#0f0;
+  border:1px solid #0f0;
+  padding:10px 15px;
+  font-size:14px;
+  cursor:pointer;
+  border-radius:6px;
+  box-shadow:0 0 5px #0f0;
+  transition: all 0.3s;
+  animation: neonPulse 2s infinite alternate;
+}
+.neonBtn:hover{
+  color:#000;
+  background:#0f0;
+  transform:translateY(-3px);
+  box-shadow:0 0 20px #0f0, 0 0 40px #0f0;
+}
+.neonBtn:active{
+  transform:translateY(1px);
+  box-shadow:0 0 10px #0f0;
+}
+@keyframes neonPulse{
+  0%{box-shadow:0 0 5px #0f0, 0 0 10px #0f0;}
+  50%{box-shadow:0 0 15px #0f0, 0 0 30px #0f0;}
+  100%{box-shadow:0 0 5px #0f0, 0 0 10px #0f0;}
+}
+
+
+
+    /* تنسيق الفلتر */
+    #filterSelect {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #6A1B9A;
+      background-color: #f3e5f5;
+      /* خلفية بنفسجية فاتحة */
+      color: #4a148c;
+      /* لون النص بنفسجي غامق */
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    /* عند المرور */
+    #filterSelect:hover {
+      background-color: #e1bee7;
+      /* خلفية أخف عند المرور */
+      transform: scale(1.05);
+    }
+
+    /* عند التركيز */
+    #filterSelect:focus {
+      outline: none;
+      border-color: #ab47bc;
+      box-shadow: 0 0 12px rgba(171, 71, 188, 0.5);
+      transform: scale(1.05);
+    }
+
+    /* تأثير فتح القائمة (Animation) */
+    #filterSelect option {
+      transition: all 0.3s ease;
+    }
+
+    #filterSelect:focus option {
+      color: #6A1B9A;
+      background-color: #f3e5f5;
+    }
+
+    /* تنسيق label */
+    label {
+      font-weight: bold;
+      color: #6A1B9A;
+      margin-right: 8px;
+    }
+
+    /* FLOAT & ANIMATION */
+    @keyframes float {
+      0% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-12px)
+      }
+
+      100% {
+        transform: translateY(0)
+      }
+    }
+
+    /* CONTACT WHATSAPP */
+    .contact-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, #00ffcc, #ffe082, #2d0b3a, #6A1B9A, #00ccff, #ff00cc);
+      color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00ffcc, 0 #ffe082 0 40px;
+      text-decoration: darkgoldenrod, 0 40px #00ccff, 0 0 60px #ff00cc;
+      text-decoration: none;
+      transition: all .3s;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      animation: float 3s ease-in-out infinite;
+      z-index: 999;
+    }
+
+    .contact-whatsapp img {
+      width: 36px;
+      height: 36px;
+      filter: drop-shadow(0 0 4px #fff);
+    }
+
+    .contact-whatsapp span {
+      opacity: 0;
+      transition: opacity .25s;
+      margin-left: 6px;
+    }
+
+    .contact-whatsapp:hover span {
+      opacity: 1;
+    }
+
+    .footer {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-left: 4px;
+      background: linear-gradient(90deg, #6A1B9A, #9C27B0);
+      color: #fff;
+      text-align: center;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer div {
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(120deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+      animation: shine 3s linear infinite;
+    }
+
+  
+
+    /* Network Cards */
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #4A148C;
+    }
+
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    .card h4 {
+      margin: 0 0 6px 0;
+      color: #6A1B9A;
+    }
+
+    .card p {
+      margin: 4px 0;
+    }
+
+    .card small {
+      color: #555;
+    }
+
+    .section {
+      background: #6A1B9A;
+      color: #fff;
+      text-align: center;
+      padding: 6px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    /* Network Canvas */
+    #networkCanvas {
+      border: 2px dashed #ccc;
+      height: 300px;
+      border-radius: 16px;
+      position: relative;
+      background: #fff;
+    }
+
+    /* Shine Footer */
+    @keyframes shine {
+      0% {
+        left: -100%;
+      }
+
+      50% {
+        left: 100%;
+      }
+
+      100% {
+        left: -100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- صور -->
+  <img src="download.png" class="floating-img" style="top:10%; left:5%; bottom: 9000 px;">
+  <img src="download.jpg" class="floating-img" style="top:60%; left:20%; right: 70%; bottom: 50 px;">
+  <img src="images.jpg" class="floating-img" style="top:25%; left:70%;">
+  <img src="Screenshot_20250316-083903~2.png" class="floating-img" style="top:50%; left:50%; right: 30%;">
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="logo">NET-Lab</div>
+        <h1>دليل الشبكات</h1>
+      </div>
+      <nav class="links">
+        <a href="#home">home</a>
+        <a href="#network">command</a>
+        <a href="#contact">contact</a>
+
+      </nav>
+
+
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="container hero-grid">
+      <div>
+        <h2>دليل كامل لأوامر الشبكات <span class="typed" id="typed"></span></h2>
+        <p class="muted">مرجع شامل لكل أوضاع الروتر والسويتش وأوامر Cisco الشهيرة.</p>
+      </div>
+      <div>
+        <div class="hero-card">
+          <img src="download (3).jpg" alt="Network">
+          <h2 style="color:#fff;">تعلم أوامر الشبكات بسهولة</h2>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NETWORK TABLE -->
+  <section class="section" id="network">
+    <div class="container">
+      <h3 style="color:#9C27B0 ;width:2px ; height: auto; "> Command</h3>
+      <div style="overflow-x:auto;">
+        <table class="network-table">
+          <thead>
+            <tr>
+              <th>الوضع (Mode)</th>
+              <th>الأمر</th>
+              <th>الاختصار</th>
+              <th>الوصف</th>
+              <th>مثال / ملاحظة</th>
+            </tr>
+          </thead>
+          <tbody id="networkBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <h2>مرجع أوامر الشبكات الكامل</h2>
+
+  <!-- الفلتر -->
+
+  <div style="margin-bottom:16px;">
+    <label>فلتر الأقسام: </label>
+    <select id="filterSelect">
+      <option value="all">الكل</option>
+      <option value="Cisco Router/Switch">Cisco / الروتر والسويتش</option>
+      <option value="Windows Server">Windows Server</option>
+      <option value="Linux Server">Linux Server</option>
+      <option value="Firewall">Firewall</option>
+      <option value="DHCP/NAT">DHCP / NAT</option>
+    </select>
+  </div>
+
+  <!-- الكروت -->
+  <div class="cards-container" id="networkCards"></div>
+
+  <!-- Subnetting Calculator -->
+  <div class="calc-wrap">
+    <h1>🔥 Subnetting Calculator 🔥</h1>
+
+    <div class="controls">
+      <input id="ip" placeholder="IP Example: 192.168.1.0">
+      <input id="cidr" placeholder="/24" style="width:60px">
+      <button onclick="calc()" style="
+    background: linear-gradient(180deg, rgba(0,255,102,0.10), rgba(0,255,102,0.04));
+    color: var(--neon);
+    border:1px solid rgba(0,255,102,0.25);
+    box-shadow: 0 0 12px rgba(0,255,102,0.14);
+  ">احسب</button>
+    </div>
+    <!-- protocols -->
+  <h2> show protocols</h2>
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="اكتب هنا للبحث...">
+  <button id="searchBtn">بحث</button>
+  <button id="clearBtn">إلغاء</button>
+  <button id="showAllBtn">عرض الكل</button>
+</div>
+
+<table id="protocolTable">
+      <thead>
+        <tr>
+          <th>البروتوكول</th>
+          <th>البورت</th>
+          <th>TCP/UDP</th>
+          <th>الوظيفة</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- البيانات كما كانت -->
+        <tr><td>HTTP</td><td>80</td><td>TCP</td><td>تصفح ويب</td></tr>
+        <tr><td>HTTPS</td><td>443</td><td>TCP</td><td>تصفح ويب مشفر</td></tr>
+        <tr><td>FTP</td><td>21 (control), 20 (data)</td><td>TCP</td><td>نقل ملفات</td></tr>
+        <tr><td>SFTP</td><td>22</td><td>TCP</td><td>نقل ملفات مؤمن عبر SSH</td></tr>
+        <tr><td>SSH</td><td>22</td><td>TCP</td><td>وصول آمن لسيرفر / طرفية</td></tr>
+        <tr><td>Telnet</td><td>23</td><td>TCP</td><td>وصول طرفية بدون تشفير</td></tr>
+        <tr><td>SMTP</td><td>25</td><td>TCP</td><td>إرسال بريد إلكتروني</td></tr>
+        <tr><td>POP3</td><td>110</td><td>TCP</td><td>استقبال بريد (Download)</td></tr>
+        <tr><td>POP3S</td><td>995</td><td>TCP</td><td>POP3 مشفر</td></tr>
+        <tr><td>IMAP</td><td>143</td><td>TCP</td><td>استقبال بريد (Server-side)</td></tr>
+        <tr><td>IMAPS</td><td>993</td><td>TCP</td><td>IMAP مشفر</td></tr>
+        <tr><td>DNS</td><td>53</td><td>TCP/UDP</td><td>ترجمة دومين → IP</td></tr>
+        <tr><td>DHCP</td><td>67 (Server), 68 (Client)</td><td>UDP</td><td>توزيع IP تلقائي</td></tr>
+        <tr><td>TFTP</td><td>69</td><td>UDP</td><td>نقل ملفات بسيط</td></tr>
+        <tr><td>NTP</td><td>123</td><td>UDP</td><td>مزامنة الوقت</td></tr>
+        <tr><td>SNMP</td><td>161</td><td>UDP</td><td>مراقبة الشبكات</td></tr>
+        <tr><td>SNMP Trap</td><td>162</td><td>UDP</td><td>إرسال تنبيهات الشبكة</td></tr>
+        <tr><td>LDAP</td><td>389</td><td>TCP/UDP</td><td>خدمات الدليل</td></tr>
+        <tr><td>LDAPS</td><td>636</td><td>TCP</td><td>LDAP مشفر</td></tr>
+        <tr><td>SMB</td><td>445</td><td>TCP</td><td>مشاركة ملفات Windows</td></tr>
+        <tr><td>RDP</td><td>3389</td><td>TCP/UDP</td><td>التحكم بسطح مكتب بعيد</td></tr>
+        <tr><td>BGP</td><td>179</td><td>TCP</td><td>تبادل توجيه بين الشبكات</td></tr>
+        <tr><td>IRC</td><td>194</td><td>TCP</td><td>دردشة الإنترنت</td></tr>
+        <tr><td>Kerberos</td><td>88</td><td>TCP/UDP</td><td>المصادقة على الشبكة</td></tr>
+        <tr><td>SOCKS5</td><td>1080</td><td>TCP</td><td>بروكسي عام</td></tr>
+        <tr><td>UPnP</td><td>1900</td><td>UDP</td><td>اكتشاف أجهزة الشبكة تلقائي</td></tr>
+        <tr><td>ICMP</td><td>—</td><td>—</td><td>تشخيص الشبكة (ping)</td></tr>
+        <tr><td>ARP</td><td>—</td><td>—</td><td>ربط IP بـ MAC</td></tr>
+        <tr><td>QUIC</td><td>443</td><td>UDP</td><td>HTTP/3 بروتوكول نقل سريع</td></tr>
+        <tr><td>MySQL</td><td>3306</td><td>TCP</td><td>قاعدة بيانات</td></tr>
+        <tr><td>PostgreSQL</td><td>5432</td><td>TCP</td><td>قاعدة بيانات</td></tr>
+        <tr><td>MSSQL</td><td>1433</td><td>TCP</td><td>قاعدة بيانات</td></tr>
+        <tr><td>Redis</td><td>6379</td><td>TCP</td><td>قاعدة بيانات Key-Value</td></tr>
+        <tr><td>MongoDB</td><td>27017</td><td>TCP</td><td>قاعدة بيانات NoSQL</td></tr>
+        <tr><td>LDAP Sync</td><td>389</td><td>TCP/UDP</td><td>تزامن خدمات الدليل</td></tr>
+        <tr><td>FTPS</td><td>990/21</td><td>TCP</td><td>FTP مشفر</td></tr>
+        <tr><td>SMTPS</td><td>465</td><td>TCP</td><td>SMTP مشفر</td></tr>
+        <tr><td>SIP</td><td>5060</td><td>TCP/UDP</td><td>VoIP مكالمات صوتية</td></tr>
+        <tr><td>SIP-TLS</td><td>5061</td><td>TCP</td><td>SIP مشفر</td></tr>
+        <tr><td>RTP</td><td>10000-20000</td><td>UDP</td><td>نقل صوت/فيديو (VoIP)</td></tr>
+        <tr><td>OSPF</td><td>89</td><td>IP فقط</td><td>بروتوكول توجيه داخلي</td></tr>
+        <tr><td>EIGRP</td><td>88</td><td>IP فقط</td><td>بروتوكول توجيه داخلي</td></tr>
+        <tr><td>RIP</td><td>520</td><td>UDP</td><td>بروتوكول توجيه داخلي</td></tr>
+        <tr><td>MPLS</td><td>—</td><td>—</td><td>نقل بيانات الشبكات الكبيرة</td></tr>
+        <tr><td>IPSec ESP</td><td>50</td><td>—</td><td>تشفير على مستوى IP</td></tr>
+        <tr><td>IPSec AH</td><td>51</td><td>—</td><td>المصادقة على مستوى IP</td></tr>
+      </tbody>
+    </table>
+
+
+<br width="100%">
+  <!-- Network Drawing Area -->
+   <h2> Draw the Toplogy </h2>
+<div id="container">
+  <div id="toolbox">
+    <button data-type="router">Router</button>
+    <button data-type="switch">Switch</button>
+    <button data-type="server">Server</button>
+    <button data-type="pc">PC</button>
+    <button data-type="cable">Cable</button>
+    <button id="cancelBtn"> cancel tool </button>
+    <button id="clearNetworkBtn">clear Network </button>
+    <button id="renameBtn" class="neonBtn">Change Device Name</button>
+    
+  </div>
+  <!-- <div id="controlPanel" style="position:relative; padding:10px; display:flex; gap:10px;"> -->
+  <div id="workarea">
+    <canvas id="canvas" width="800" height="500"></canvas>
+  </div>
+</div>
+
+
+  <!-- Courses Section -->
+  <section class="section">
+    <div class="container">
+      <h3>الكورسات المميزة</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;">
+        <div class="network-card" style="background:#1f1f2e;color:#fff;animation:float 3s ease-in-out infinite;">
+          <img src="download.jpg" style="width:100%;border-radius:12px;margin-bottom:8px;">
+          <h4>أمن المعلومات</h4>
+          <p>تعلم أساسيات الأمن السيبراني وحماية الأنظمة.</p>
+          <a href="https://teracourses.com/ar/categories/cyber-security" target="_blank"
+            style="color:#ffe082;font-weight:700;">ابدأ الآن</a>
+        </div>
+        <div class="network-card" style="background:#2d1f3a;color:#fff;animation:float 3s ease-in-out infinite 0.2s;">
+          <img src="download (1).jpg" style="width:100%;border-radius:12px;margin-bottom:8px;">
+          <h4>شبكات الحاسب</h4>
+          <p>دليل كامل لبناء الشبكات وفهم البروتوكولات.</p>
+          <a href="https://teracourses.com/ar/categories/computer-networks" target="_blank"
+            style="color:#ffe082;font-weight:700;">ابدأ الآن</a>
+        </div>
+        <div class="network-card" style="background:#3a1f2d;color:#fff;animation:float 3s ease-in-out infinite 0.4s;">
+          <img src="download (2).jpg" style="width:100%;border-radius:12px;margin-bottom:8px;">
+          <h4>مهارات الحاسبات</h4>
+          <p>تعلم أساسيات الحاسوب والبرمجيات المهمة.</p>
+          <a href="https://teracourses.com/ar/categories/computer-skills" target="_blank"
+            style="color:#ffe082;font-weight:700;">ابدأ الآن</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="container">
+      <center class="ali">
+        <h3>تواصل مع المطور</h3>
+        <p>لأي استفسار أو اقتراح تواصل عبر واتساب:</p>
+      </center>
+    </div>
+  </section>
+
+  <!-- WhatsApp floating -->
+  <a class="contact-whatsapp" href="https://wa.me/201009288971" target="_blank">
+    <img src="phone.png" alt="واتساب">
+    <footer>
+      <span>تواصل مع المطور Net-Master</span>
+    </footer>
+  </a>
+
+  <!-- Signup Modal
+  <div id="signupModal">
+    <div>
+      <h3>تسجيل حساب جديد</h3>
+      <input type="text" placeholder="الاسم">
+      <input type="email" placeholder="البريد الإلكتروني">
+      <input type="password" placeholder="كلمة المرور">
+      <button class="btn" id="signupSubmit">تسجيل</button>
+      <span id="closeSignup">&times;</span>
+    </div>
+  </div> -->
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>© 2025 Net-Lab | جميع الحقوق محفوظة</span>
+    <div></div>
+  </footer>
+
+  <script>
+
+    /* GLITCH PIECES */
+    let glitchImages = [
+      "download.png",
+      "download.jpg",
+      "images.jpg",
+      "Screenshot_20250316-083903~2.png"
+    ];
+    let glitchPieces = [];
+
+    function spawnGlitch() {
+      glitchImages.forEach(src => {
+        for (let r = 0; r < 5; r++) {
+          for (let c = 0; c < 5; c++) {
+            let p = document.createElement('div');
+            p.className = "glitchPiece";
+            p.style.backgroundImage = `url(${src})`;
+            p.style.backgroundPosition = `${-c * 70}px ${-r * 70}px`;
+            document.body.appendChild(p);
+            glitchPieces.push(p);
+          }
+        }
+      });
+      setInterval(() => {
+        glitchPieces.forEach(p => {
+          let x = (innerWidth / 2) + Math.random() * 300 - 150;
+          let y = (innerHeight / 2) + Math.random() * 300 - 150;
+          p.style.opacity = Math.random();
+          p.style.transform = `translate(${x}px,${y}px) rotate(${Math.random() * 40 - 20}deg)`;
+        });
+      }, 200);
+    }
+
+    /* Typed effect */
+    const typedEl = document.getElementById('typed');
+    const words = ['الأساسية', 'المتقدمة', 'المشهورة'];
+    let wi = 0, ci = 0, forward = true;
+    (function t() {
+      const w = words[wi];
+      if (forward) { ci++; if (ci > w.length) { forward = false; setTimeout(t, 700); return } }
+      else { ci--; if (ci < 0) { forward = true; wi = (wi + 1) % words.length } }
+      typedEl.textContent = w.substring(0, ci);
+      setTimeout(t, forward ? 100 : 40);
+    })();
+
+    /* Toggle menu */
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.querySelector('nav.links');
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('show');
+      });
+    }
+
+    /* Network Commands */
+    const NETWORK_COMMANDS = [
+      // Cisco Router/Switch
+      { section: "Cisco Router/Switch", mode: "User EXEC", cmd: "enable", shortcut: "en", desc: "الدخول لوضع Privileged EXEC", example: "Router> en" },
+      { section: "Cisco Router/Switch", mode: "User EXEC", cmd: "disable", shortcut: "dis", desc: "الرجوع لوضع User EXEC", example: "Router# dis" },
+      { section: "Cisco Router/Switch", mode: "User EXEC", cmd: "ping [IP]", shortcut: "-", desc: "اختبار الاتصال", example: "Router> ping 192.168.1.1" },
+      { section: "Cisco Router/Switch", mode: "User EXEC", cmd: "traceroute [IP]", shortcut: "tracert", desc: "تتبع مسار الشبكة", example: "Router> tracert 8.8.8.8" },
+      { section: "Cisco Router/Switch", mode: "Privileged EXEC", cmd: "show running-config", shortcut: "sh run", desc: "عرض إعدادات الجهاز الحالية", example: "Router# sh run" },
+      { section: "Cisco Router/Switch", mode: "Privileged EXEC", cmd: "show startup-config", shortcut: "sh start", desc: "عرض إعدادات الجهاز عند الإقلاع", example: "Router# sh start" },
+      { section: "Cisco Router/Switch", mode: "Privileged EXEC", cmd: "show ip interface brief", shortcut: "sh ip int br", desc: "عرض حالة الواجهات وعناوين IP", example: "Router# sh ip int br" },
+      { section: "Cisco Router/Switch", mode: "Global Config", cmd: "configure terminal", shortcut: "conf t", desc: "الدخول لوضع التكوين", example: "Router# conf t" },
+      { section: "Cisco Router/Switch", mode: "Global Config", cmd: "hostname [name]", shortcut: "-", desc: "تغيير اسم الجهاز", example: "Router(config)# hostname R1" },
+      { section: "Cisco Router/Switch", mode: "Interface Config", cmd: "interface [type/num]", shortcut: "int [type/num]", desc: "تكوين واجهة", example: "Router(config)# int gig0/1" },
+      { section: "Cisco Router/Switch", mode: "Interface Config", cmd: "ip address [IP] [mask]", shortcut: "ip add", desc: "تعيين IP", example: "Router(config-if)# ip add 192.168.1.1 255.255.255.0" },
+      { section: "Cisco Router/Switch", mode: "Interface Config", cmd: "no shutdown", shortcut: "no shut", desc: "تفعيل الواجهة", example: "Router(config-if)# no shut" },
+      { section: "Cisco Router/Switch", mode: "VLAN / Switchport", cmd: "vlan [id]", shortcut: "-", desc: "إنشاء VLAN", example: "Switch(config)# vlan 10" },
+      { section: "Cisco Router/Switch", mode: "Routing", cmd: "ip route [dest] [mask] [next-hop]", shortcut: "-", desc: "Static Route", example: "Router(config)# ip route 192.168.2.0 255.255.255.0 192.168.1.2" },
+      { section: "Cisco Router/Switch", mode: "Routing", cmd: "router ospf [id]", shortcut: "-", desc: "تفعيل OSPF", example: "Router(config)# router ospf 1" },
+      { section: "Cisco Router/Switch", mode: "Access Lists / Security", cmd: "access-list [num] [permit|deny] [protocol] [src] [wildcard]", shortcut: "-", desc: "إنشاء ACL", example: "Router(config)# access-list 10 permit ip 192.168.1.0 0.0.0.255 any" },
+      { section: "Cisco Router/Switch", mode: "DHCP", cmd: "ip dhcp pool [name]", shortcut: "-", desc: "إنشاء Pool DHCP", example: "Router(config)# ip dhcp pool LAN" },
+      { section: "Cisco Router/Switch", mode: "NAT", cmd: "ip nat inside", shortcut: "-", desc: "تعيين واجهة داخلية", example: "Router(config-if)# ip nat inside" },
+      { section: "Cisco Router/Switch", mode: "Debug / Troubleshooting", cmd: "debug ip routing", shortcut: "-", desc: "عرض الرسائل أثناء التوجيه", example: "Router# debug ip routing" },
+
+      // Windows Server
+      { section: "Windows Server", mode: "CMD", cmd: "ipconfig /all", shortcut: "-", desc: "عرض IP وأسماء DNS", example: "C:\\> ipconfig /all" },
+      { section: "Windows Server", mode: "CMD", cmd: "ping [IP]", shortcut: "-", desc: "اختبار الاتصال", example: "C:\\> ping 192.168.1.1" },
+      { section: "Windows Server", mode: "CMD", cmd: "netstat -an", shortcut: "-", desc: "عرض البورتات المفتوحة والاتصالات", example: "C:\\> netstat -an" },
+      { section: "Windows Server", mode: "CMD", cmd: "nslookup [domain]", shortcut: "-", desc: "اختبار DNS", example: "C:\\> nslookup google.com" },
+      { section: "Windows Server", mode: "CMD", cmd: "net user [username] [password] /add", shortcut: "-", desc: "إنشاء مستخدم جديد", example: "C:\\> net user test P@ssw0rd /add" },
+      { section: "Windows Server", mode: "CMD", cmd: "shutdown /s /t [sec]", shortcut: "-", desc: "إيقاف السيرفر", example: "C:\\> shutdown /s /t 60" },
+
+      // Linux Server
+      { section: "Linux Server", mode: "Terminal", cmd: "ifconfig", shortcut: "-", desc: "عرض إعدادات الشبكة", example: "# ifconfig" },
+      { section: "Linux Server", mode: "Terminal", cmd: "ip addr show", shortcut: "ip a", desc: "عرض IP", example: "# ip a" },
+      { section: "Linux Server", mode: "Terminal", cmd: "ping [IP]", shortcut: "-", desc: "اختبار الاتصال", example: "# ping 192.168.1.1" },
+      { section: "Linux Server", mode: "Terminal", cmd: "netstat -tulnp", shortcut: "-", desc: "عرض البورتات المفتوحة", example: "# netstat -tulnp" },
+      { section: "Linux Server", mode: "Terminal", cmd: "systemctl status [service]", shortcut: "-", desc: "حالة الخدمة", example: "# systemctl status ssh" },
+      { section: "Linux Server", mode: "Terminal", cmd: "ufw status", shortcut: "-", desc: "حالة الجدار الناري", example: "# ufw status" },
+      { section: "Linux Server", mode: "Terminal", cmd: "iptables -L", shortcut: "-", desc: "عرض قواعد الفايروول", example: "# iptables -L" },
+
+      // Firewall
+      { section: "Firewall", mode: "Cisco", cmd: "ip access-group [num] in|out", shortcut: "-", desc: "تطبيق ACL على واجهة", example: "Router(config-if)# ip access-group 10 in" },
+      { section: "Firewall", mode: "Linux", cmd: "ufw enable/disable/status", shortcut: "-", desc: "تفعيل/تعطيل/حالة Firewall", example: "# ufw status" },
+      { section: "Firewall", mode: "Linux", cmd: "iptables -A INPUT -p tcp --dport 80 -j ACCEPT", shortcut: "-", desc: "فتح بورت محدد", example: "# iptables -A INPUT -p tcp --dport 80 -j ACCEPT" },
+      { section: "Firewall", mode: "Linux", cmd: "iptables -A INPUT -j DROP", shortcut: "-", desc: "منع كل الاتصالات", example: "# iptables -A INPUT -j DROP" },
+      { section: "Firewall", mode: "RHEL/CentOS", cmd: "firewall-cmd --zone=public --add-port=443/tcp", shortcut: "-", desc: "فتح بورت مؤقت", example: "# firewall-cmd --zone=public --add-port=443/tcp" },
+      { section: "Firewall", mode: "RHEL/CentOS", cmd: "firewall-cmd --runtime-to-permanent", shortcut: "-", desc: "حفظ قواعد الفايروول", example: "# firewall-cmd --runtime-to-permanent" },
+
+      // DHCP/NAT
+      { section: "DHCP/NAT", mode: "Router", cmd: "network [net] [mask]", shortcut: "-", desc: "تحديد الشبكة للـ DHCP", example: "Router(dhcp)# network 192.168.1.0 255.255.255.0" },
+      { section: "DHCP/NAT", mode: "Router", cmd: "default-router [IP]", shortcut: "-", desc: "تعيين Gateway للعملاء", example: "Router(dhcp)# default-router 192.168.1.1" },
+      { section: "DHCP/NAT", mode: "Router", cmd: "ip nat inside source list [ACL] interface [int] overload", shortcut: "-", desc: "NAT Overload", example: "Router(config)# ip nat inside source list 1 interface gig0/1 overload" },
+    ];
+
+    const networkCards = document.getElementById('networkCards');
+    NETWORK_COMMANDS.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      // store the section on the element so the filter can read it later
+      card.dataset.section = c.section;
+      card.innerHTML = `
+    <div class="section">${c.section}</div>
+    <h4>${c.mode}</h4>
+    <p><b>الأمر:</b> ${c.cmd}</p>
+    <p><b>اختصار:</b> ${c.shortcut}</p>
+    <p>${c.desc}</p>
+    <small>${c.example}</small>
+  `;
+      networkCards.appendChild(card);
+    });
+
+    // فلتر التغيير
+    function displayCards(filter) {
+      // loop through created cards and toggle visibility based on the stored data-section
+      const cards = networkCards.children;
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        const section = card.dataset.section || '';
+        if (filter === 'all' || section === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      }
+    }
+    //subnetting calculator logic
+    function toIP(num) {
+      return (
+        ((num >>> 24) & 255) + "." +
+        ((num >>> 16) & 255) + "." +
+        ((num >>> 8) & 255) + "." +
+        (num & 255)
+      );
+    }
+    let networks = [];
+    let page = 0;
+
+    function calc() {
+      const ip = document.getElementById("ip").value.trim();
+      const cidr = parseInt(document.getElementById("cidr").value.replace("/", ""));
+
+      if (!ip || isNaN(cidr)) {
+        alert("اكتب IP و CIDR مظبوط");
+        return;
+      }
+
+      const p = ip.split(".");
+      const ipInt = (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | (p[3] * 1);
+
+      const mask = 0xFFFFFFFF << (32 - cidr);
+      const block = Math.pow(2, 32 - cidr);
+
+      networks = [];
+
+      for (let i = 0; i < 256; i++) {
+        const net = (ipInt & mask) + (i * block);
+        const bc = net + block - 1;
+
+        networks.push({
+          network: toIP(net),
+          broadcast: toIP(bc),
+          first: toIP(net + 1),
+          last: toIP(bc - 1),
+          hosts: block - 2,
+          mask: toIP(mask >>> 0)
+        });
+      }
+
+      page = 0;
+      render();
+    }
+
+    function render() {
+      if (networks.length === 0) return;
+
+      const n = networks[page];
+
+      document.getElementById("out").innerHTML = `
+    <table>
+      <tr><th>الشبكة رقم</th><td>${page + 1} / ${networks.length}</td></tr>
+      <tr><th>Subnet Mask</th><td>${n.mask}</td></tr>
+      <tr><th>Network Address</th><td>${n.network}</td></tr>
+      <tr><th>Broadcast</th><td>${n.broadcast}</td></tr>
+      <tr><th>First Host</th><td>${n.first}</td></tr>
+      <tr><th>Last Host</th><td>${n.last}</td></tr>
+      <tr><th>Hosts</th><td>${n.hosts}</td></tr>
+    </table>
+
+    <div style="margin-top:18px; display:flex; gap:12px; justify-content:center;">
+      <button onclick="prevNet()" style="
+  background: linear-gradient(180deg, rgba(0,255,102,0.10), rgba(0,255,102,0.04));
+  color: var(--neon);
+  border:1px solid rgba(0,255,102,0.25);
+  box-shadow: 0 0 12px rgba(0,255,102,0.14);
+">السابق</button>
+      <button onclick="nextNet()" style="
+  background: linear-gradient(180deg, rgba(0,255,102,0.10), rgba(0,255,102,0.04));
+  color: var(--neon);
+  border:1px solid rgba(0,255,102,0.25);
+  box-shadow: 0 0 12px rgba(0,255,102,0.14);
+">التالي</button>
+
+     <button onclick="cancelView()" style="
+  background: linear-gradient(180deg, rgba(0,255,102,0.10), rgba(0,255,102,0.04));
+  color: var(--neon);
+  border:1px solid rgba(0,255,102,0.25);
+  box-shadow: 0 0 12px rgba(0,255,102,0.14);
+">
+  إلغاء
+</button>
+
+    </div>
+  `;
+    }
+    // تنقل بين الشبكات
+ document.addEventListener("DOMContentLoaded", () => {
+
+  const table = document.getElementById("protocolTable");
+  const searchInput = document.getElementById("searchInput");
+  const trs = document.querySelectorAll("#protocolTable tbody tr");
+  let tableOpen = false;
+
+  // زرّ عرض الكل (فتح/غلق)
+  document.getElementById("showAllBtn").addEventListener("click", () => {
+    tableOpen = !tableOpen;
+
+    if (tableOpen) {
+      table.style.display = "table";
+      trs.forEach(tr => {
+        tr.classList.remove("hidden-row");
+        tr.classList.add("fade-in");
+      });
+    } else {
+      table.style.display = "none";
+    }
+  });
+
+  // زر البحث
+  document.getElementById("searchBtn").addEventListener("click", () => {
+    const input = searchInput.value.toLowerCase();
+
+    table.style.display = "table"; // يظهر النتيجة فقط
+
+    trs.forEach(tr => {
+      const match = [...tr.querySelectorAll("td")].some(td =>
+        td.textContent.toLowerCase().includes(input)
+      );
+      tr.classList.toggle("hidden-row", !match);
+      if (match) tr.classList.add("fade-in");
+    });
+  });
+
+  // إلغاء
+  document.getElementById("clearBtn").addEventListener("click", () => {
+    searchInput.value = "";
+    table.style.display = "none";
+    tableOpen = false;
+  });
+
+});
+    // Network Drawing Logic
+const toolbox=document.querySelectorAll("#toolbox button[data-type]");
+const workarea=document.getElementById("workarea");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+let devices=[], cables=[];
+let currentTool=null, drag=null, ox=0, oy=0, cableMode=false;
+let tempCable={active:false,start:null,end:null};
+let pulseDevices = new Set();
+
+// ===== Toolbox Buttons =====
+toolbox.forEach(btn=>{
+  btn.onclick=()=>{
+    const type=btn.dataset.type;
+    if(type==="cable"){ cableMode=true; currentTool=null; tempCable.active=false; return; }
+    currentTool=type; cableMode=false; tempCable.active=false;
+  };
+});
+
+// ===== Add Device =====
+workarea.onclick=e=>{
+  const rect=workarea.getBoundingClientRect();
+  const x=e.clientX-rect.left;
+  const y=e.clientY-rect.top;
+
+  if(currentTool && !cableMode){ // إضافة جهاز
+    const div=document.createElement("div");
+    div.className="device";
+    div.style.left=(x-30)+"px";
+    div.style.top=(y-30)+"px";
+    div.dataset.type=currentTool;
+
+    const img=document.createElement("img");
+    img.src={
+      router:"Screenshot 2025-11-21 042039.png",
+      switch:"Screenshot 2025-11-21 042153.png",
+      server:"Screenshot 2025-11-21 042247.png",
+      pc:"Screenshot 2025-11-21 042228.png"
+    }[currentTool]||"";
+
+    const nameSpan=document.createElement("span");
+    nameSpan.textContent=currentTool;
+
+    div.appendChild(img);
+    div.appendChild(nameSpan);
+    workarea.appendChild(div);
+    devices.push(div);
+    enableDrag(div);
+  } else if(cableMode){ // رسم كابل
+    let targetDevice=null;
+    devices.forEach(d=>{
+      const dx=d.offsetLeft; const dy=d.offsetTop;
+      if(x>=dx && x<=dx+60 && y>=dy && y<=dy+60){ targetDevice=d; }
+    });
+    if(targetDevice){
+      if(!tempCable.start){ tempCable.start=targetDevice; tempCable.active=true; }
+      else if(tempCable.start && targetDevice!==tempCable.start){ 
+        cables.push([tempCable.start,targetDevice]); 
+        tempCable.start=null; tempCable.active=false; 
+      }
+    }
+  }
+};
+
+// ===== Drag Devices =====
+function enableDrag(el){
+  el.onmousedown=e=>{
+    if(!cableMode){
+      drag=el; ox=e.clientX-el.offsetLeft; oy=e.clientY-el.offsetTop;
+    } else { tempCable.active=true; tempCable.start=el; }
+  };
+}
+document.onmouseup=e=>{ drag=null; tempCable.end=null; };
+document.onmousemove=e=>{
+  if(drag){
+    let nx=e.clientX-ox;
+    let ny=e.clientY-oy;
+    nx=Math.max(0,Math.min(nx,workarea.clientWidth-60));
+    ny=Math.max(0,Math.min(ny,workarea.clientHeight-60));
+    drag.style.left=nx+"px";
+    drag.style.top=ny+"px";
+  }
+  if(tempCable.active){
+    const rect=workarea.getBoundingClientRect();
+    tempCable.end={x:e.clientX-rect.left,y:e.clientY-rect.top};
+  }
+};
+
+// ===== Draw Cables + Pulse =====
+
+  function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  cables.forEach(pair=>{
+    const [a,b] = pair;
+    const ax = a.offsetLeft+30, ay = a.offsetTop+30;
+    const bx = b.offsetLeft+30, by = b.offsetTop+30;
+
+    // تحديد لون الكابل
+    let isRouter = a.dataset.type==="router" || b.dataset.type==="router";
+    ctx.strokeStyle = isRouter ? "#f00" : "#0f0"; // أحمر للروتر، أخضر للباقي
+    ctx.lineWidth=3;
+    ctx.setLineDash([12,6]);
+    ctx.lineDashOffset=-Date.now()/40;
+
+    // رسم الكابل
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+
+    // Packet animation
+    let t = (Date.now()/600)%1;
+    let px = ax + (bx-ax)*t;
+    let py = ay + (by-ay)*t;
+    ctx.beginPath();
+    ctx.arc(px, py, 5, 0, Math.PI*2);
+    ctx.fillStyle = isRouter ? "#f00" : "#0f0"; // نفس لون الكابل
+    ctx.fill();
+
+    // إضافة للPulse لو روتر
+    if(isRouter){
+      pulseDevices.add(a);
+      pulseDevices.add(b);
+    }
+  });
+
+  // Pulse effect للأجهزة الروتر
+  pulseDevices.forEach(d=>{
+    const img = d.querySelector("img");
+    const scale = 1 + 0.3*Math.sin(Date.now()/150);
+    img.style.transform = `scale(${scale})`;
+    img.style.filter = "drop-shadow(0 0 25px #f00)";
+  });
+  pulseDevices.clear();
+
+  // كابل مؤقت أثناء السحب
+  if(tempCable.active && tempCable.start && tempCable.end){
+    const ax = tempCable.start.offsetLeft+30;
+    const ay = tempCable.start.offsetTop+30;
+    const bx = tempCable.end.x;
+    const by = tempCable.end.y;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.strokeStyle="#0f0";
+    ctx.lineWidth=3;
+    ctx.setLineDash([12,6]);
+    ctx.stroke();
+  }
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+
+// ===== Resize Canvas =====
+window.onresize=()=>{
+  canvas.width=workarea.offsetWidth;
+  canvas.height=workarea.offsetHeight;
+};
+canvas.width=workarea.offsetWidth;
+canvas.height=workarea.offsetHeight;
+
+// ===== Change Device Name =====
+document.getElementById("renameBtn").onclick = ()=>{
+  if(devices.length===0){ alert("No devices to rename"); return; }
+  let names = devices.map((d,i)=>`${i+1}: ${d.querySelector("span").textContent}`).join("\n");
+  let idx = prompt("Choose device number to rename:\n"+names);
+  idx = parseInt(idx)-1;
+  if(idx>=0 && idx<devices.length){
+    const newName = prompt("Enter new name:", devices[idx].querySelector("span").textContent);
+    if(newName) devices[idx].querySelector("span").textContent = newName;
+  }
+};
+// ==== Clear Network ===== 
+// ===== Clear Network =====
+document.getElementById("clearNetworkBtn").addEventListener("click", () => {
+    // مسح كل الأجهزة من الـ DOM
+    devices.forEach(d => d.remove());
+    devices = [];
+
+    // مسح كل الكابلات
+    cables = [];
+
+    // مسح أي كابل مؤقت أثناء الرسم
+    tempCable.active = false;
+    tempCable.start = null;
+    tempCable.end = null;
+
+    // مسح canvas بالكامل
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+
+document.getElementById("clearNetworkBtn").addEventListener("click", () => {
+    // مسح البحث في البروتوكولات
+    document.getElementById("searchInput").value = "";
+    // إعادة عرض كل الصفوف
+    document.querySelectorAll("#protocolTable tbody tr").forEach(tr => tr.classList.remove("hidden-row"));
+});
+
+
+// ===== Cancel Current Tool =====
+document.getElementById("cancelBtn").addEventListener("click", () => {
+    currentTool = null;
+    cableMode = false;
+    tempCable.active = false;
+    tempCable.start = null;
+    tempCable.end = null;
+});
+
+  </script>
+</body>
+
+</html>
